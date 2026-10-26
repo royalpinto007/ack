@@ -21,6 +21,8 @@ Add meaningful tests for instruction or validation changes. Cover authorization 
 
 The dependency overrides keep the pinned Solana SDK on patched `jayson` and `toml` releases. Recheck the HTTP RPC client and Anchor IDL loading when changing them.
 
+Dependabot proposes compatible updates. Review major migrations manually, especially the Anchor and Solana SDK pair and the Node.js types matching the supported runtime.
+
 ## Repository hygiene
 
 Never commit keypairs, ledgers, private response content, tokens or local environment values. Keep generated demo videos and their production scripts outside the product repository.
