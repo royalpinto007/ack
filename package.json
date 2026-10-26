@@ -1,7 +1,6 @@
 {
   "name": "ack-receipts",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
   "license": "MIT",
   "description": "On-chain delivery acknowledgment receipts for Solana.",
@@ -22,7 +21,9 @@
     "check": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build",
     "demo": "npm run build && node scripts/demo.mjs",
     "start": "node dist/server.js",
-    "cli": "tsx src/cli.ts"
+    "cli": "tsx src/cli.ts",
+    "prepack": "npm run build",
+    "package:check": "npm run build && node scripts/check-package.mjs"
   },
   "dependencies": {
     "@anchor-lang/core": "1.2.1",
@@ -52,7 +53,7 @@
     "type": "git",
     "url": "git+https://github.com/royalpinto007/ack.git"
   },
-  "homepage": "https://github.com/royalpinto007/ack#readme",
+  "homepage": "https://www.npmjs.com/package/ack-receipts",
   "bugs": {
     "url": "https://github.com/royalpinto007/ack/issues"
   },
@@ -63,6 +64,29 @@
     "delivery-receipts",
     "acknowledgment",
     "ai-agents",
-    "local-first"
+    "local-first",
+    "cli",
+    "pda",
+    "acknowledgments"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "ack-receipts": "dist/cli.js"
+  },
+  "files": [
+    "dist/",
+    "idl/ack.json",
+    "docs/*.md",
+    "docs/*.svg",
+    "docs/screenshot.png",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md"
+  ],
+  "bundledDependencies": [
+    "@anchor-lang/core",
+    "@solana/web3.js"
   ]
 }

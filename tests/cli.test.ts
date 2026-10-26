@@ -2,6 +2,26 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
 import { parseCli } from "../src/cli.js";
+import { mkdtemp, rm, symlink } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
+test("CLI executes through npm's executable symlink", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "ack-cli-"));
+  try {
+    const executable = join(directory, "ack-receipts");
+    await symlink(new URL("../src/cli.ts", import.meta.url), executable);
+    const result = spawnSync(
+      process.execPath,
+      ["--import", "tsx", executable, "--help"],
+      { encoding: "utf8", timeout: 5000 },
+    );
+    assert.equal(result.status, 0, result.stderr);
+    assert.match(result.stdout, /On-chain delivery receipts/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 
 test("CLI requires explicit signing keys and exactly one commitment source", () => {
   assert.throws(

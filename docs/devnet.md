@@ -1,43 +1,85 @@
-# Optional Devnet setup
+# Deploy ack? to Devnet
 
-Start with the local demo and tests. Devnet is a separate, optional deployment. It uses free test SOL for fees and rent and a public RPC that may be rate limited. Mainnet is unsupported.
+Devnet is Solana's public practice network. Other people can see its accounts and transactions, but its test SOL has no monetary value. It is separate from the local validator on your computer and from Mainnet, where real SOL is used.
 
-## Prepare your own keys
+| Where    | What runs there                                          | Funds                         |
+| -------- | -------------------------------------------------------- | ----------------------------- |
+| Localnet | The validator started by `npm run demo` on your computer | Disposable local test SOL     |
+| Devnet   | A shared public Solana network for development           | Free test SOL from a faucet   |
+| Mainnet  | The production Solana network                            | Real SOL; unsupported by ack? |
 
-Stop the local demo. Create a deployer keypair and a program keypair that you control:
+Deploying uploads ack?'s compiled Rust program to Devnet and gives it a public program address. **It does not put the dashboard online.** The dashboard still runs on your computer and reads that address through RPC. Publishing the CLI on npm is a separate action too.
+
+Only ack? needs a program deployment. Settled and Solana Authority Inspector read existing chain data; they do not deploy a smart contract.
+
+## 1. Open the source project
+
+Use a terminal in your ack checkout. Stop `npm run demo` first with Ctrl+C. You need Node.js 22.18+, Anchor 1.2.1 and Solana CLI 4.1.2 with Rust and SBF tools installed. See the [official installation guide](https://www.anchor-lang.com/docs/installation).
+
+```sh
+cd /path/to/ack
+npm install
+anchor --version
+solana --version
+```
+
+The npm package supplies the CLI and dashboard. Use the source checkout to build and deploy the Rust program.
+
+## 2. Prepare your Devnet identities
+
+A **keypair file** is a private signing key. Its **public key** is the address you can share. You need a deployer that pays test SOL and controls program upgrades, and a program keypair that identifies this deployment.
+
+Create the deployer if it does not already exist:
 
 ```sh
 mkdir -p .ack target/deploy
-solana-keygen new --no-bip39-passphrase \
-  --outfile .ack/devnet-deployer-keypair.json
-solana-keygen new --no-bip39-passphrase \
-  --outfile target/deploy/ack-keypair.json
+if [ ! -f .ack/devnet-deployer-keypair.json ]; then
+  solana-keygen new --no-bip39-passphrase \
+    --outfile .ack/devnet-deployer-keypair.json
+fi
 ```
 
-If either file already exists, do not overwrite it. A local build may already have generated the program keypair. Reuse it only if it was generated on your machine and you control it, or securely move it aside before generating a separate program identity.
+The key generator prints recovery information. Keep it private. These directories are ignored by Git. Use keys dedicated to development, with no real funds.
 
-Both directories are ignored by Git. Keep these keys private. Never use a wallet funded on Mainnet. Request test SOL for the deployer's public address from the [Solana Devnet faucet](https://faucet.solana.com/).
+A local build may already have generated `target/deploy/ack-keypair.json`. Reuse it only if it was generated on your machine and you control it. For a fresh checkout, create it if absent:
 
-## Build for that program identity
+```sh
+if [ ! -f target/deploy/ack-keypair.json ]; then
+  solana-keygen new --no-bip39-passphrase \
+    --outfile target/deploy/ack-keypair.json
+fi
+solana-keygen pubkey .ack/devnet-deployer-keypair.json
+```
+
+The last command prints your deployer's **public address**, not its private key.
+
+## 3. Get free Devnet SOL
+
+Paste that deployer public address into the [official Devnet faucet](https://faucet.solana.com/) and request test SOL. Check the balance:
+
+```sh
+solana balance --url devnet --keypair .ack/devnet-deployer-keypair.json
+```
+
+Test SOL pays for transactions and storage on Devnet. Faucet limits and RPC availability can vary. Deployment needs more test SOL than a receipt transaction. If the deploy command reports insufficient funds, request more test SOL or wait for the faucet limit to reset. Do not buy SOL for this walkthrough.
+
+## 4. Build and test your program
 
 ```sh
 anchor keys sync
 npm run program:build
+npm run check
+npm run test:program
 solana-keygen pubkey target/deploy/ack-keypair.json
 ```
 
-`anchor keys sync` changes the program ID in the Rust source and Anchor configuration. The build refreshes the IDL used by the TypeScript client. Keep those public IDs consistent. Changing them also changes the local program identity.
+`anchor keys sync` updates the public program ID in the Rust source and Anchor configuration. The build regenerates the IDL used by the CLI. These are expected public source changes; keep the private keypair out of Git. Tests still use a disposable local validator.
 
-Run the local program tests again before deployment:
+The last command prints your **program public address**. Keep it handy for the following steps.
 
-```sh
-npm run check
-npm run test:program
-```
+## 5. Deploy to Devnet
 
-## Deploy when ready
-
-This command submits a Devnet deployment using your test SOL:
+This is the command that actually submits the program to the public practice network:
 
 ```sh
 solana program deploy --url devnet \
@@ -46,17 +88,42 @@ solana program deploy --url devnet \
   target/deploy/ack.so
 ```
 
-Deployment does not transfer upgrade authority. The program keypair identifies the program; the deployer controls its upgrade authority unless you explicitly change it. This guide does not change your global Solana configuration.
+The CLI prints the program address when deployment succeeds. The deployer keeps upgrade authority, which allows it to update the program later. This walkthrough does not remove or transfer that authority, or change your global Solana configuration.
 
-## Read and sign
-
-Replace `PROGRAM_PUBLIC_KEY` with the public key printed earlier. Build and start the read-only dashboard:
+Replace `PROGRAM_PUBLIC_KEY` below with your printed program address:
 
 ```sh
-npm run build
-ACK_NETWORK=devnet ACK_PROGRAM_ID=PROGRAM_PUBLIC_KEY npm start
+solana program show PROGRAM_PUBLIC_KEY --url devnet
 ```
 
-Use `--network devnet --program-id PROGRAM_PUBLIC_KEY` with CLI commands. Signing still requires your explicit `--keypair` path. The client and provider need their own Devnet test SOL for fees; the client also pays receipt rent.
+You can also paste it into [Solana Explorer on Devnet](https://explorer.solana.com/?cluster=devnet). Select Devnet when sharing an explorer link.
 
-`npm run demo` always starts the local demo. It does not deploy to Devnet. Never share keypair files, private responses or seed phrases in issues or exported examples.
+## 6. Open the dashboard
+
+From the source checkout:
+
+```sh
+npm run cli -- dashboard --network devnet --program-id PROGRAM_PUBLIC_KEY
+```
+
+Or use your installed npm CLI:
+
+```sh
+npx ack-receipts dashboard --network devnet --program-id PROGRAM_PUBLIC_KEY
+```
+
+Open **http://127.0.0.1:4440**. An empty list is normal for a new deployment. This command only reads accounts; it does not create sample Devnet receipts.
+
+## 7. Create your first public receipt
+
+Create a separate client keypair and provider keypair if you do not have development-only keys already. Keep these files private and request faucet SOL for each public address. The client pays receipt rent and fees; the provider needs fees for its delivery transaction.
+
+Use the [guide's signing commands](guide.md#sign-a-receipt), adding both options to every Devnet command:
+
+```sh
+--network devnet --program-id PROGRAM_PUBLIC_KEY
+```
+
+The sequence is client `create`, provider `deliver`, then client `acknowledge`. Refresh the dashboard to read the new state. Public hashes and participant addresses are visible to everyone. The program records signed claims, not proof of delivery or correctness.
+
+[Official Solana deployment reference](https://solana.com/docs/programs/deploying) · [Public networks and RPC](https://solana.com/docs/references/clusters)
