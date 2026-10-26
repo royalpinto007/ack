@@ -1,0 +1,155 @@
+.guide-main {
+  max-width: 1100px;
+  padding-top: 38px;
+}
+.guide-back {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  margin-bottom: 22px;
+}
+.guide-back svg {
+  width: 15px;
+  height: 15px;
+  transform: rotate(180deg);
+}
+.guide-content {
+  max-width: 850px;
+}
+.guide-content h1 {
+  font-size: clamp(32px, 5vw, 43px);
+  margin-bottom: 20px;
+}
+.guide-content h2 {
+  margin-top: 38px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 23px;
+  font-weight: 550;
+  letter-spacing: -0.5px;
+}
+.guide-content h3 {
+  font-size: 18px;
+  margin-top: 25px;
+}
+.guide-content p,
+.guide-content li {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+.guide-content p {
+  margin: 15px 0;
+}
+.guide-content strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.guide-content a {
+  color: var(--text);
+}
+.guide-content ul,
+.guide-content ol {
+  padding-left: 23px;
+}
+.guide-content li {
+  padding-left: 4px;
+  margin: 9px 0;
+}
+.guide-content pre {
+  padding: 20px 23px;
+  background: #101617;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow-x: auto;
+  line-height: 1.8;
+  margin: 20px 0;
+}
+.guide-content code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
+.guide-content :not(pre) > code {
+  color: var(--text);
+  padding: 2px 4px;
+  border-radius: 3px;
+  background: var(--surface-raised);
+  overflow-wrap: anywhere;
+}
+.guide-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  margin: 24px 0;
+}
+.guide-content .table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 20px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.guide-content table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.guide-content th,
+.guide-content td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--line);
+  min-width: 100px;
+  vertical-align: top;
+}
+.guide-content tr:last-child td {
+  border-bottom: 0;
+}
+.guide-content th {
+  color: var(--text);
+  background: var(--surface-raised);
+  font-weight: 550;
+}
+.guide-content td {
+  color: var(--muted);
+}
+.guide-content blockquote {
+  border-left: 3px solid var(--gold);
+  padding-left: 18px;
+  margin: 24px 0;
+}
+.guide-content > :last-child {
+  margin-bottom: 50px;
+}
+@media (max-width: 600px) {
+  .guide-content p,
+  .guide-content li {
+    font-size: 13px;
+  }
+  .guide-content h2 {
+    font-size: 21px;
+  }
+  .guide-content pre {
+    padding: 16px;
+    font-size: 12px;
+  }
+  .guide-content th,
+  .guide-content td {
+    padding: 10px;
+    font-size: 11px;
+    min-width: 75px;
+  }
+  .guide-content img {
+    border-radius: 6px;
+  }
+  .guide-main {
+    padding-top: 20px;
+  }
+}

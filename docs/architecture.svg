@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">ack? architecture</title>
+  <desc id="desc">Client and provider sign through the TypeScript CLI. Solana RPC submits transactions to the Anchor program, which records each receipt in a PDA. A read-only Express server reads the accounts for the local dashboard.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="m0 0 10 5-10 5" fill="none" stroke="#abb8b6" stroke-width="1.5"/></marker></defs>
+  <rect width="1200" height="720" rx="18" fill="#151a1b"/>
+  <g font-family="Segoe UI,Helvetica,Arial,sans-serif">
+    <text x="48" y="64" fill="#f0f2ee" font-size="32" font-weight="600">ack<tspan fill="#e9bc73">?</tspan></text>
+    <text x="143" y="62" fill="#abb8b6" font-size="17">Signed claims. Public receipts.</text>
+    <path d="M48 91h1104" stroke="#465354"/>
+    <rect x="48" y="131" width="252" height="134" rx="10" fill="#1c2223" stroke="#465354"/>
+    <text x="72" y="166" fill="#f0f2ee" font-size="19" font-weight="600">Client</text>
+    <text x="72" y="197" fill="#abb8b6" font-size="15">Creates the receipt</text>
+    <text x="72" y="222" fill="#86d3bd" font-size="15">Acknowledges the claim</text>
+    <text x="72" y="246" fill="#abb8b6" font-size="13">Signs with its own keypair</text>
+    <rect x="48" y="300" width="252" height="134" rx="10" fill="#1c2223" stroke="#465354"/>
+    <text x="72" y="336" fill="#f0f2ee" font-size="19" font-weight="600">Provider</text>
+    <text x="72" y="367" fill="#e9bc73" font-size="15">Signs a delivery claim</text>
+    <text x="72" y="392" fill="#abb8b6" font-size="15">Commits a response hash</text>
+    <text x="72" y="416" fill="#abb8b6" font-size="13">Signs with its own keypair</text>
+    <path d="M301 198h57v84h30m-87 84h57v-84" fill="none" stroke="#abb8b6" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <rect x="390" y="212" width="230" height="138" rx="10" fill="#232b2c" stroke="#66736d"/>
+    <text x="413" y="250" fill="#f0f2ee" font-size="19" font-weight="600">TypeScript CLI</text>
+    <text x="413" y="281" fill="#abb8b6" font-size="15">Hashes content locally</text>
+    <text x="413" y="306" fill="#abb8b6" font-size="15">Builds and signs instructions</text>
+    <text x="413" y="330" fill="#abb8b6" font-size="13">Never sends response content</text>
+    <path d="M621 282h77" stroke="#abb8b6" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="642" y="266" fill="#abb8b6" font-size="12">RPC</text>
+    <rect x="702" y="132" width="450" height="302" rx="10" fill="#1c2223" stroke="#66736d"/>
+    <text x="727" y="169" fill="#f0f2ee" font-size="19" font-weight="600">Solana · Localnet or Devnet</text>
+    <path d="M726 188h401" stroke="#465354"/>
+    <text x="728" y="224" fill="#f0f2ee" font-size="17">Anchor program</text>
+    <text x="728" y="253" fill="#abb8b6" font-size="15">Checks signers, PDA and transition order</text>
+    <text x="728" y="278" fill="#abb8b6" font-size="15">Rejects duplicate confirmations</text>
+    <rect x="726" y="303" width="402" height="103" rx="7" fill="#151a1b" stroke="#465354"/>
+    <text x="745" y="334" fill="#e9bc73" font-size="16">Receipt PDA</text>
+    <text x="745" y="360" fill="#abb8b6" font-size="14">Hashes · public keys · status · timestamps</text>
+    <text x="745" y="385" fill="#abb8b6" font-size="13">Seeds: receipt + client + request hash</text>
+    <path d="M926 435v45h-191v35" fill="none" stroke="#abb8b6" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="754" y="469" fill="#abb8b6" font-size="13">Read public accounts through RPC</text>
+    <rect x="584" y="519" width="303" height="107" rx="10" fill="#232b2c" stroke="#465354"/>
+    <text x="607" y="555" fill="#f0f2ee" font-size="18" font-weight="600">Express + TypeScript client</text>
+    <text x="607" y="584" fill="#abb8b6" font-size="14">Decode accounts using the program IDL</text>
+    <text x="607" y="607" fill="#abb8b6" font-size="13">GET endpoints only · no signing keys</text>
+    <path d="M583 573H499" stroke="#abb8b6" stroke-width="1.5" marker-end="url(#arrow)"/>
+    <text x="515" y="557" fill="#abb8b6" font-size="12">JSON</text>
+    <rect x="48" y="519" width="447" height="107" rx="10" fill="#1c2223" stroke="#465354"/>
+    <text x="72" y="555" fill="#f0f2ee" font-size="18" font-weight="600">Read-only dashboard</text>
+    <text x="72" y="584" fill="#abb8b6" font-size="14">Receipt list · timeline · public values · JSON export</text>
+    <text x="72" y="607" fill="#abb8b6" font-size="13">No wallet connection, database or cloud service</text>
+    <path d="M48 655h1104" stroke="#465354"/>
+    <text x="48" y="689" fill="#abb8b6" font-size="14">Records signed claims, not proof of delivery or correctness.</text>
+    <text x="1152" y="689" text-anchor="end" fill="#abb8b6" font-size="13">MIT · open source</text>
+  </g>
+</svg>

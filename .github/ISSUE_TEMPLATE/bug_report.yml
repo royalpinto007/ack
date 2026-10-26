@@ -1,0 +1,33 @@
+name: Bug report
+description: Report an issue with the program, CLI or dashboard.
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please use a local reproduction. Do not include keypairs, tokens or private response content.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Include what you expected and the command or screen involved.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: A minimal example using local test accounts is ideal.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: OS, Node, Anchor and Solana versions; Localnet or Devnet.
+  - type: textarea
+    id: output
+    attributes:
+      label: Relevant output
+      description: Remove secrets and private content before sharing.
+      render: text

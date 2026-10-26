@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="Inspect signed delivery claims and acknowledgments recorded on Solana."
+    />
+    <title>ack? | Delivery receipts</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" type="module"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to receipts</a>
+    <header class="app-header">
+      <a class="brand" href="/" aria-label="ack? home">ack<span>?</span></a>
+      <span class="brand-description">On-chain delivery receipts</span>
+      <nav aria-label="Main navigation">
+        <a href="/guide.html">Guide</a>
+        <a href="/architecture.html">Architecture</a>
+        <a
+          href="https://github.com/royalpinto007/ack"
+          aria-label="ack? on GitHub"
+          >GitHub
+          <svg aria-hidden="true"><use href="/icons.svg#external" /></svg
+        ></a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="page-heading" aria-labelledby="page-title">
+        <div>
+          <p class="section-context">
+            <span class="context-mark" aria-hidden="true"></span> Two parties.
+            One shared record.
+          </p>
+          <h1 id="page-title">
+            Delivery receipts<span class="heading-period">.</span>
+          </h1>
+          <p class="page-description">
+            Follow a request from creation to acknowledgment.
+          </p>
+        </div>
+        <div class="read-controls">
+          <span
+            id="connection-state"
+            class="connection-state"
+            data-state="loading"
+            >Reading chain</span
+          >
+          <button id="refresh" class="button button-secondary" type="button">
+            <svg aria-hidden="true"><use href="/icons.svg#refresh" /></svg
+            ><span>Refresh</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="error-banner" class="error-banner" role="alert" hidden></div>
+
+      <section class="workbench" aria-label="Receipt explorer">
+        <aside class="receipt-sidebar" aria-labelledby="receipts-heading">
+          <div class="sidebar-heading">
+            <h2 id="receipts-heading">
+              Receipts <span id="receipt-count" class="count">0</span>
+            </h2>
+            <span class="read-only-label"
+              ><svg aria-hidden="true"><use href="/icons.svg#eye" /></svg>Read
+              only</span
+            >
+          </div>
+          <div class="list-controls">
+            <label class="search-field" for="receipt-search"
+              ><svg aria-hidden="true"><use href="/icons.svg#search" /></svg
+              ><span class="sr-only">Search receipts</span
+              ><input
+                id="receipt-search"
+                type="search"
+                autocomplete="off"
+                placeholder="Address, hash or participant"
+                maxlength="128"
+            /></label>
+            <div class="filter-field">
+              <label for="status-filter">Status</label>
+              <div class="select-wrap">
+                <select id="status-filter">
+                  <option value="all">All receipts</option>
+                  <option value="created">Created</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="acknowledged">Acknowledged</option></select
+                ><svg aria-hidden="true"><use href="/icons.svg#chevron" /></svg>
+              </div>
+            </div>
+          </div>
+          <ul
+            id="receipt-list"
+            class="receipt-list"
+            aria-label="Receipts"
+            aria-busy="true"
+          >
+            <li class="list-skeleton" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </li>
+            <li class="list-skeleton" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </li>
+            <li class="list-skeleton" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </li>
+          </ul>
+          <div class="sidebar-footer">
+            <svg aria-hidden="true"><use href="/icons.svg#terminal" /></svg>
+            <p>
+              Create and sign receipts with the
+              <a href="/guide.html#sign-a-receipt">TypeScript CLI</a>.
+            </p>
+          </div>
+        </aside>
+
+        <section
+          id="receipt-detail"
+          class="receipt-detail"
+          aria-label="Selected receipt"
+          aria-busy="true"
+        >
+          <div class="detail-loading" aria-hidden="true">
+            <span class="skeleton skeleton-title"></span
+            ><span class="skeleton skeleton-line"></span
+            ><span class="skeleton skeleton-panel"></span>
+          </div>
+        </section>
+      </section>
+
+      <div class="source-strip">
+        <span
+          ><svg aria-hidden="true"><use href="/icons.svg#chain" /></svg
+          ><span id="source-network">Solana</span
+          ><span class="source-separator" aria-hidden="true">/</span
+          ><span id="source-program" class="mono"
+            >Waiting for program</span
+          ></span
+        ><span id="last-read">No chain read yet</span>
+      </div>
+      <footer class="page-footer">
+        <p>
+          <svg aria-hidden="true"><use href="/icons.svg#info" /></svg>Records
+          signed claims, not proof of delivery or correctness.
+        </p>
+        <a href="/guide.html#what-a-receipt-means">Understand the record</a>
+      </footer>
+    </main>
+    <div
+      id="notification"
+      class="notification"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+  </body>
+</html>

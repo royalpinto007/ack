@@ -1,0 +1,19 @@
+name: Product feedback
+description: Share what worked or got in your way.
+title: "feedback: "
+labels: [feedback]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: What were you trying to do?
+      placeholder: Inspect a receipt, understand an authority error, integrate the CLI...
+    validations:
+      required: true
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What helped or got in your way?
+      description: Include the change that would help you most. Keep private responses and keys out of your feedback.
+    validations:
+      required: true

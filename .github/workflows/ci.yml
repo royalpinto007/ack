@@ -1,0 +1,40 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      CARGO_BUILD_JOBS: 1
+      RAYON_NUM_THREADS: 1
+      SOLANA_RAYON_THREADS: 1
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: rustup toolchain install 1.97.1 --profile minimal --component clippy,rustfmt
+      - run: rustup default 1.97.1
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cache/solana
+            target/debug
+            target/release
+            target/sbpfv3-solana-solana
+          key: ack-sbf-4.1.2-anchor-1.2.1-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+      - run: npm ci
+      - run: npm run check
+      - run: cargo clippy --all-targets --locked -- -D warnings
+      - run: npm audit --audit-level=high
+      - run: node scripts/ci-tools.mjs
+      - run: npm run program:build
+      - run: git diff --exit-code -- idl/ack.json
+      - run: npm run test:program
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

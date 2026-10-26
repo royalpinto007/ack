@@ -1,0 +1,352 @@
+{
+  "address": "1TF9hpardpWJHqhTCv3mKT4TVN6pksGi5gaMNKkJkrv",
+  "metadata": {
+    "name": "ack",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Signed delivery claims and acknowledgments on Solana"
+  },
+  "docs": [
+    "Records participant claims. A signature does not prove service delivery or correctness."
+  ],
+  "instructions": [
+    {
+      "name": "acknowledge",
+      "discriminator": [
+        209,
+        182,
+        197,
+        45,
+        97,
+        93,
+        210,
+        58
+      ],
+      "accounts": [
+        {
+          "name": "receipt",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  112,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receipt.client",
+                "account": "Receipt"
+              },
+              {
+                "kind": "account",
+                "path": "receipt.request_hash",
+                "account": "Receipt"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "signer": true,
+          "relations": [
+            "receipt"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_receipt",
+      "discriminator": [
+        187,
+        57,
+        104,
+        13,
+        15,
+        1,
+        219,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "receipt",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  112,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "client"
+              },
+              {
+                "kind": "arg",
+                "path": "request_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "request_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "mark_delivered",
+      "discriminator": [
+        240,
+        118,
+        188,
+        142,
+        64,
+        85,
+        107,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "receipt",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  112,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receipt.client",
+                "account": "Receipt"
+              },
+              {
+                "kind": "account",
+                "path": "receipt.request_hash",
+                "account": "Receipt"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "signer": true,
+          "relations": [
+            "receipt"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "response_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Receipt",
+      "discriminator": [
+        39,
+        154,
+        73,
+        106,
+        80,
+        102,
+        145,
+        153
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidProvider",
+      "msg": "Provider must be a non-default public key."
+    },
+    {
+      "code": 6001,
+      "name": "SameParticipant",
+      "msg": "Provider and client must be different participants."
+    },
+    {
+      "code": 6002,
+      "name": "EmptyRequestHash",
+      "msg": "Request hash must not be all zeroes."
+    },
+    {
+      "code": 6003,
+      "name": "EmptyResponseHash",
+      "msg": "Response hash must not be all zeroes."
+    },
+    {
+      "code": 6004,
+      "name": "UnauthorizedProvider",
+      "msg": "Only the recorded provider can mark delivery."
+    },
+    {
+      "code": 6005,
+      "name": "UnauthorizedClient",
+      "msg": "Only the recorded client can acknowledge this receipt."
+    },
+    {
+      "code": 6006,
+      "name": "AlreadyDelivered",
+      "msg": "A delivery claim has already been recorded."
+    },
+    {
+      "code": 6007,
+      "name": "NotDelivered",
+      "msg": "The provider must mark delivery before acknowledgment."
+    },
+    {
+      "code": 6008,
+      "name": "AlreadyAcknowledged",
+      "msg": "This receipt has already been acknowledged."
+    },
+    {
+      "code": 6009,
+      "name": "InvalidClock",
+      "msg": "The chain timestamp predates the previous transition."
+    }
+  ],
+  "types": [
+    {
+      "name": "Receipt",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "request_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "response_hash",
+            "docs": [
+              "Zero until the provider signs its first and only delivery claim."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "delivered_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "acknowledged_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ReceiptStatus"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReceiptStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Created"
+          },
+          {
+            "name": "Delivered"
+          },
+          {
+            "name": "Acknowledged"
+          }
+        ]
+      }
+    }
+  ]
+}
