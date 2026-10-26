@@ -30,6 +30,7 @@ jobs:
           key: ack-sbf-4.1.2-anchor-1.2.1-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
       - run: npm ci
       - run: npm run check
+      - run: npm run package:check
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: npm audit --audit-level=high
       - run: node scripts/ci-tools.mjs

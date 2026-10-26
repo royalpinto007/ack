@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { resolve } from "node:path";
+import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 import type { Network } from "./types.js";
@@ -25,10 +25,12 @@ const flags = [
   "response-hash",
   "text",
   "file",
+  "port",
 ] as const;
 type Flag = (typeof flags)[number];
 type Command =
   | "help"
+  | "dashboard"
   | "hash"
   | "pda"
   | "create"
@@ -44,6 +46,7 @@ export interface CliArguments {
 }
 
 const commandFlags: Record<Exclude<Command, "help">, readonly Flag[]> = {
+  dashboard: ["port"],
   hash: ["text", "file"],
   pda: ["client", "request-id", "request-hash"],
   create: ["provider", "keypair", "request-id", "request-hash"],
@@ -55,8 +58,9 @@ const commandFlags: Record<Exclude<Command, "help">, readonly Flag[]> = {
 
 export const HELP = `ack?  On-chain delivery receipts
 
-Usage: npm run cli -- <command> [options]
+Usage: ack-receipts <command> [options]
 
+  dashboard    [--port <port>] (read-only local dashboard)
   hash         --text <text> | --file <path>
   pda          --client <address> (--request-id <id> | --request-hash <hex>)
   create       --provider <address> --keypair <path> (--request-id <id> | --request-hash <hex>)
@@ -149,6 +153,14 @@ export function parseCli(argv: string[]): CliArguments {
 export async function runCli(argv: string[]): Promise<unknown> {
   const args = parseCli(argv);
   if (args.command === "help") return HELP;
+  if (args.command === "dashboard") {
+    process.env.ACK_NETWORK = args.network;
+    if (args.programId !== undefined)
+      process.env.ACK_PROGRAM_ID = args.programId;
+    if (args.options.port !== undefined) process.env.PORT = args.options.port;
+    await import("./server.js");
+    return;
+  }
   const option = (flag: Flag): string => {
     const value = args.options[flag];
     if (value === undefined || value === "")
@@ -238,10 +250,11 @@ export async function runCli(argv: string[]): Promise<unknown> {
 
 if (
   process.argv[1] &&
-  import.meta.url === pathToFileURL(resolve(process.argv[1])).href
+  import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href
 ) {
   runCli(process.argv.slice(2))
     .then((result) => {
+      if (result === undefined) return;
       process.stdout.write(
         typeof result === "string"
           ? result
