@@ -18,7 +18,7 @@ Requires Node.js 22.18+.
 npx ack-receipts --help
 ```
 
-The npm package includes the CLI and read-only dashboard. Use `ack-receipts dashboard --network devnet --program-id PROGRAM_PUBLIC_KEY` to view your own deployment. Building or deploying the Rust program requires the source checkout below.
+The npm package includes the CLI and read-only dashboard. Use `npx ack-receipts dashboard --network devnet --program-id PROGRAM_PUBLIC_KEY` to view your own deployment. Building or deploying the Rust program requires the source checkout below.
 
 ## Run locally
 
